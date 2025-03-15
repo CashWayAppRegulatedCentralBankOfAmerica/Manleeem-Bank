@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-Pesa Transaction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('img.3000.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+        .container-box {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .mpesa-logo {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #006400;
+        }
+        .btn-action {
+            background-color: #6AA84F;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-action:hover {
+            background-color: #5a7f6f;
+        }
+        .highlight-text {
+            color: rgb(0, 86, 62);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="dashboard" class="container-box">
+            <img src="img.400.jpg" alt="User Avatar" class="avatar">
+            <h3>Jacob</h3>
+            <p><strong>Balance:</strong> KES <span id="balance">100,000.00</span></p>
+            <button class="btn-action" onclick="showPage('withdraw')">Withdraw</button>
+            <button class="btn-action" onclick="showPage('deposit')">Deposit</button>
+            <button class="btn-action" onclick="showPage('credit_card')">Credit Card</button>
+        </div>
+
+        <div id="credit_card" class="container-box" style="display:none;">
+            <h3>Select Credit Card</h3>
+            <select class="form-control">
+                <option>Visa</option>
+                <option>MasterCard</option>
+                <option>American Express</option>
+            </select>
+            <button class="btn-action" onclick="showPage('dashboard')">Back</button>
+        </div>
+
+        <div id="withdraw" class="container-box" style="display:none;">
+            <h3>Select Withdrawal Method</h3>
+            <button class="btn-action" onclick="showPage('mpesa_withdraw')">M-Pesa</button>
+        </div>
+
+        <div id="mpesa_withdraw" class="container-box" style="display:none;">
+            <h3>M-Pesa Withdrawal</h3>
+            <input type="text" id="phone" class="form-control" placeholder="Enter M-Pesa Number" required>
+            <input type="number" id="amount" class="form-control mt-2" placeholder="Enter Amount" required>
+            <button class="btn-action" onclick="processWithdrawal()">Submit</button>
+        </div>
+
+        <div id="deposit" class="container-box" style="display:none;">
+            <h3>Deposit Funds</h3>
+            <input type="text" id="depositPhone" class="form-control" placeholder="Enter M-Pesa Number" required>
+            <input type="number" id="depositAmount" class="form-control mt-2" placeholder="Enter Amount" required>
+            <button class="btn-action" onclick="processDeposit()">Submit</button>
+        </div>
+
+        <div id="processing" class="container-box" style="display:none;">
+            <h3>Processing Transaction...</h3>
+            <p>Wait for <span id="countdown">5</span> seconds</p>
+        </div>
+    </div>
+
+    <script>
+        function showPage(page) {
+            document.querySelectorAll('.container-box').forEach(box => box.style.display = 'none');
+            document.getElementById(page).style.display = 'block';
+        }
+
+        function formatBalance(amount) {
+            return parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateBalance(amount, type) {
+            let balance = parseFloat(document.getElementById("balance").innerText.replace(/,/g, ''));
+            if (type === 'withdraw') {
+                balance -= amount;
+            } else {
+                balance += amount;
+            }
+            document.getElementById("balance").innerText = formatBalance(balance);
+        }
+
+        function processDeposit() {
+            let phone = document.getElementById("depositPhone").value;
+            let amount = parseFloat(document.getElementById("depositAmount").value);
+
+            if (phone && amount && amount > 0) {
+                updateBalance(amount, 'deposit');
+                alert("Deposit Successful!");
+                showPage('dashboard');
+            } else {
+                alert("Please enter valid details.");
+            }
+        }
+
+        function processWithdrawal() {
+            let phone = document.getElementById("phone").value;
+            let amount = parseFloat(document.getElementById("amount").value);
+
+            if (phone && amount && amount > 0) {
+                updateBalance(amount, 'withdraw');
+                alert("Withdrawal Successful!");
+                showPage('dashboard');
+            } else {
+                alert("Please enter valid details.");
+            }
+        }
+    </script>
+
+</body>
+</html>
